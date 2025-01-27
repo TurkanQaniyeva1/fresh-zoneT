@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { FaCartShopping } from "react-icons/fa6";
 import { FaBars } from "react-icons/fa6";
 import Link from "next/link";
-
+import { FaHeart } from "react-icons/fa";
 const Header = () => {
   const [cartCount, setCartCount] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false); 
@@ -94,8 +94,18 @@ const Header = () => {
             </li>
 
             <li className="relative">
-              <Link href="/cart" passHref>
+              <Link href="/pages/addtocard" passHref>
                 <FaCartShopping size={24} />
+                {cartCount > 0 && (
+                  <span className="absolute top-[-10px] right-[-10px] bg-[#bb3a33] text-white text-xs rounded-full px-1 py-1">
+                    {cartCount}
+                  </span>
+                )}
+              </Link>
+            </li>
+            <li className="relative">
+              <Link href="/pages/wishlist" passHref>
+                <FaHeart size={24} />
                 {cartCount > 0 && (
                   <span className="absolute top-[-10px] right-[-10px] bg-[#bb3a33] text-white text-xs rounded-full px-1 py-1">
                     {cartCount}

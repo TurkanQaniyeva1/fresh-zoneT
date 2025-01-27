@@ -21,7 +21,7 @@ export default function DetailPage({ params }) {
 
   useEffect(() => {
     getDetail();
-  }, [params.detail]);
+  }, []);
 
   const increaseQuantity = () => {
     setQuantity((prev) => prev + 1);
