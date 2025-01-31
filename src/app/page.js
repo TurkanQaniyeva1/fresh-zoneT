@@ -2,6 +2,9 @@
 import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { FaCartShopping } from "react-icons/fa6";
+import { FaRegHeart } from "react-icons/fa";
+import { BiSolidDetail } from "react-icons/bi";
 
 const Carousel = () => {
   const images = [
@@ -47,6 +50,13 @@ export default function Home() {
 
   useEffect(() => {
     getApi();
+  }, []);
+
+  useEffect(() => {
+    const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    const savedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+    setAlldata(savedCart);
+    setWishlist(savedWishlist);
   }, []);
 
   const addToCart = (product) => {
@@ -112,19 +122,19 @@ export default function Home() {
                     className="btn bg-[#d46643] text-white py-1 px-4 rounded-md hover:bg-[#b85b39] text-sm"
                     onClick={() => addToCart(product)}
                   >
-                    Add to Cart
+                   < FaCartShopping/>
                   </button>
                   <button
                     className="btn bg-[#d46643] text-white py-1 px-4 rounded-md hover:bg-[#b85b39] text-sm"
                     onClick={() => addToWish(product)}
                   >
-                    Add to Wishlist
+                    <FaRegHeart/>
                   </button>
                   <Link
                     href={`/pages/${product.id}`}
                     className="btn bg-[#d46643] text-white py-1 px-4 rounded-md hover:bg-[#b85b39] text-sm"
                   >
-                    Detail
+                  <BiSolidDetail/>
                   </Link>
                 </div>
               </div>

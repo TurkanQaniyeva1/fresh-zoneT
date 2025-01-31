@@ -3,30 +3,53 @@ import React, { useState, useEffect } from "react";
 import { FaCartShopping } from "react-icons/fa6";
 import { FaBars } from "react-icons/fa6";
 import Link from "next/link";
+import { IoSearch } from "react-icons/io5";
 import { FaHeart } from "react-icons/fa";
+
 const Header = () => {
   const [cartCount, setCartCount] = useState(0);
-  const [menuOpen, setMenuOpen] = useState(false); 
+  const [wishlistCount, setWishlistCount] = useState(0);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const getCartCount = () => {
-    let totalQuantity = 0;
+  const updateCounts = () => {
+    const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+    const cartTotal = cartItems.reduce((total, item) => total + (item.quantity || 1), 0);
+    setCartCount(cartTotal);
 
-    for (let i = 0; i < localStorage.length; i++) {
-      const cartItem = JSON.parse(localStorage.getItem(localStorage.key(i)));
-      if (cartItem && cartItem.quantity) {
-        totalQuantity += cartItem.quantity;
-      }
-    }
+    const wishlistItems = JSON.parse(localStorage.getItem("wishlist")) || [];
+    setWishlistCount(wishlistItems.length);
+  };
 
-    setCartCount(totalQuantity);
+  const addToCart = (product) => {
+    const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+    cartItems.push(product);
+    localStorage.setItem("cart", JSON.stringify(cartItems));
+
+    setCartCount(cartCount + 1);
+  };
+
+  const addToWishlist = (product) => {
+    const wishlistItems = JSON.parse(localStorage.getItem("wishlist")) || [];
+    wishlistItems.push(product);
+    localStorage.setItem("wishlist", JSON.stringify(wishlistItems)); 
+
+    setWishlistCount(wishlistCount + 1);
   };
 
   useEffect(() => {
-    getCartCount();
-    const interval = setInterval(getCartCount, 1000); 
+    updateCounts();
 
-    return () => clearInterval(interval); 
+    const handleStorageChange = () => {
+      updateCounts();
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, []); 
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
 
   return (
     <header className="bg-[url('https://templatemo.com/templates/templatemo_348_fresh_zone/images/templatemo_header.jpg')]">
@@ -45,6 +68,7 @@ const Header = () => {
           <FaBars
             size={30}
             className="text-[#38362d] cursor-pointer"
+            onClick={toggleMenu}
           />
         </div>
 
@@ -92,12 +116,11 @@ const Header = () => {
                 Contact
               </Link>
             </li>
-
             <li className="relative">
               <Link href="/pages/addtocard" passHref>
-                <FaCartShopping size={24} />
+                <FaCartShopping size={24} className="text-[#38362d]" />
                 {cartCount > 0 && (
-                  <span className="absolute top-[-10px] right-[-10px] bg-[#bb3a33] text-white text-xs rounded-full px-1 py-1">
+                  <span className="absolute top-[-10px] right-[-10px] bg-[#bb3a33] text-white text-xs rounded-full px-2 py-1">
                     {cartCount}
                   </span>
                 )}
@@ -105,12 +128,17 @@ const Header = () => {
             </li>
             <li className="relative">
               <Link href="/pages/wishlist" passHref>
-                <FaHeart size={24} />
-                {cartCount > 0 && (
-                  <span className="absolute top-[-10px] right-[-10px] bg-[#bb3a33] text-white text-xs rounded-full px-1 py-1">
-                    {cartCount}
+                <FaHeart size={24} className="text-[#38362d]" />
+                {wishlistCount > 0 && (
+                  <span className="absolute top-[-10px] right-[-10px] bg-[#bb3a33] text-white text-xs rounded-full px-2 py-1">
+                    {wishlistCount}
                   </span>
                 )}
+              </Link>
+            </li>
+            <li className="relative">
+              <Link href="/pages/search" passHref>
+                <IoSearch size={24} className="text-[#38362d]" />
               </Link>
             </li>
           </ul>
@@ -121,5 +149,3 @@ const Header = () => {
 };
 
 export default Header;
-
-
